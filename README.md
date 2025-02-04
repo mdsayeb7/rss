@@ -12,7 +12,7 @@ A simple web-based tool that generates an HTML blog index page using a Blogger R
 
 ## Usage 📌
 
-1. Enter your blog's domain URL (e.g., `blog.example.com`).
+1. Enter your blog's domain URL (e.g., `https://blog.example.com`).
 2. Set the number of posts to load and posts per page.
 3. Choose a layout style (Card or Minimal).
 4. Pick a primary color to match your branding.
