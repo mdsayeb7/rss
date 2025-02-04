@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Code Generator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Generate Your Blog Code</h2>
+
+        <label>Blog URL:</label>
+        <input type="text" id="blogUrl" placeholder="https://yourblog.com">
+
+        <label>Max Posts:</label>
+        <input type="number" id="maxPosts" value="10">
+
+        <label>Posts Per Page:</label>
+        <input type="number" id="postsPerPage" value="5">
+
+        <label>Primary Color:</label>
+        <input type="color" id="primaryColor" value="#2c5282">
+
+        <label>Heading Color:</label>
+        <input type="color" id="headingColor" value="#333333">
+
+        <label>Background Color:</label>
+        <input type="color" id="bgColor" value="#f5f5f5">
+
+        <button onclick="generateCode()">Generate Code</button>
+
+        <h3>Generated Code:</h3>
+        <pre id="codeOutput"></pre>
+
+        <button onclick="copyCode()">Copy Code</button>
+        <div id="copySuccess">Code copied successfully!</div>
+    </div>
+
+    <script>
+        async function generateCode() {
+            const blogUrl = document.getElementById('blogUrl').value;
+            const maxPosts = document.getElementById('maxPosts').value;
+            const postsPerPage = document.getElementById('postsPerPage').value;
+            const primaryColor = document.getElementById('primaryColor').value;
+            const headingColor = document.getElementById('headingColor').value;
+            const bgColor = document.getElementById('bgColor').value;
+
+            const response = await fetch('template.html');
+            let template = await response.text();
+
+            template = template
+                .replace(/{{BLOG_URL}}/g, blogUrl)
+                .replace(/{{MAX_POSTS}}/g, maxPosts)
+                .replace(/{{POSTS_PER_PAGE}}/g, postsPerPage)
+                .replace(/{{PRIMARY_COLOR}}/g, primaryColor)
+                .replace(/{{HEADING_COLOR}}/g, headingColor)
+                .replace(/{{BG_COLOR}}/g, bgColor);
+
+            document.getElementById('codeOutput').textContent = template;
+        }
+
+        function copyCode() {
+            const codeOutput = document.getElementById('codeOutput');
+            navigator.clipboard.writeText(codeOutput.textContent).then(() => {
+                document.getElementById('copySuccess').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('copySuccess').style.display = 'none';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
