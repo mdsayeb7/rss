@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,10 +33,11 @@
             }
         }
 
-        .config-panel, .preview-panel {
+        .config-panel,
+        .preview-panel {
             background: white;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             padding: 20px;
         }
 
@@ -59,7 +61,8 @@
             font-weight: 500;
         }
 
-        input, select {
+        input,
+        select {
             width: 100%;
             padding: 8px 12px;
             border: 1px solid #e2e8f0;
@@ -149,9 +152,10 @@
         }
     </style>
 </head>
+
 <body>
     <h1>Blog Index Page Generator</h1>
-    
+
     <div class="container">
         <div class="config-panel">
             <h2>Configuration</h2>
@@ -180,13 +184,24 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <label for="primaryColor">Primary Color</label>
-                <div class="color-picker">
-                    <input type="color" id="primaryColor" value="#2c5282">
-                    <span id="primaryColorText">#2c5282</span>
+            <div class="form-row">
+                <div class="form-group form-group-half">
+                    <label for="primaryColor">Primary Color</label>
+                    <div class="color-picker">
+                        <input type="color" id="primaryColor" value="#2c5282">
+                        <span id="primaryColorText">#2c5282</span>
+                    </div>
+                </div>
+
+                <div class="form-group form-group-half">
+                    <label for="backgroundColor">Background Color</label>
+                    <div class="color-picker">
+                        <input type="color" id="backgroundColor" value="#f4f7fa">
+                        <span id="backgroundColorText">#f4f7fa</span>
+                    </div>
                 </div>
             </div>
+
 
             <button onclick="generateCode()">Generate Code</button>
         </div>
@@ -220,8 +235,12 @@
             textElement.textContent = input.value.toUpperCase();
         }
 
-        document.getElementById('primaryColor').addEventListener('input', function(e) {
+        document.getElementById('primaryColor').addEventListener('input', function (e) {
             updateColorText(e.target, document.getElementById('primaryColorText'));
+        });
+
+        document.getElementById('backgroundColor').addEventListener('input', function (e) {
+            updateColorText(e.target, document.getElementById('backgroundColorText'));
         });
 
         function generateCode() {
@@ -231,13 +250,15 @@
             const maxPosts = document.getElementById('maxPosts').value;
             const postsPerPage = document.getElementById('postsPerPage').value;
             const primaryColor = document.getElementById('primaryColor').value;
+            const backgroundColor = document.getElementById('backgroundColor').value;
 
             let generatedCode = templateCode
                 .replace(/{{blogTitle}}/g, blogTitle || 'My Awesome Blog')
                 .replace(/{{blogUrl}}/g, fullBlogUrl)
                 .replace(/{{maxPosts}}/g, maxPosts)
                 .replace(/{{postsPerPage}}/g, postsPerPage)
-                .replace(/{{primaryColor}}/g, primaryColor);
+                .replace(/{{primaryColor}}/g, primaryColor)
+                .replace(/{{backgroundColor}}/g, backgroundColor);
 
             document.getElementById('codeOutput').innerText = generatedCode;
         }
@@ -245,7 +266,7 @@
         function copyCode() {
             const codeOutput = document.getElementById('codeOutput');
             const successMessage = document.getElementById('copySuccess');
-            
+
             navigator.clipboard.writeText(codeOutput.innerText).then(() => {
                 successMessage.style.display = 'block';
                 setTimeout(() => {
@@ -257,4 +278,5 @@
         }
     </script>
 </body>
+
 </html>
