@@ -60,11 +60,29 @@
         }
 
         input, select {
-            width: 90%;
+            width: 100%;
             padding: 8px 12px;
             border: 1px solid #e2e8f0;
             border-radius: 4px;
             font-size: 16px;
+        }
+
+        .url-group {
+            display: flex;
+        }
+
+        .url-group span {
+            background-color: #e2e8f0;
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px 0 0 4px;
+            font-size: 16px;
+            white-space: nowrap;
+        }
+
+        .url-group input {
+            border-radius: 0 4px 4px 0;
+            border-left: none;
         }
 
         .color-picker {
@@ -144,7 +162,10 @@
 
             <div class="form-group">
                 <label for="blogUrl">Blog Domain URL</label>
-                <input type="text" id="blogUrl" placeholder="https://blog.example.com" value="https://">
+                <div class="url-group">
+                    <span>https://</span>
+                    <input type="text" id="blogUrl" placeholder="blog.example.com">
+                </div>
             </div>
 
             <div class="form-row">
@@ -206,13 +227,14 @@
         function generateCode() {
             const blogTitle = document.getElementById('blogTitle').value.trim();
             const blogUrl = document.getElementById('blogUrl').value.trim();
+            const fullBlogUrl = 'https://' + blogUrl;
             const maxPosts = document.getElementById('maxPosts').value;
             const postsPerPage = document.getElementById('postsPerPage').value;
             const primaryColor = document.getElementById('primaryColor').value;
 
             let generatedCode = templateCode
                 .replace(/{{blogTitle}}/g, blogTitle || 'My Awesome Blog')
-                .replace(/{{blogUrl}}/g, blogUrl)
+                .replace(/{{blogUrl}}/g, fullBlogUrl)
                 .replace(/{{maxPosts}}/g, maxPosts)
                 .replace(/{{postsPerPage}}/g, postsPerPage)
                 .replace(/{{primaryColor}}/g, primaryColor);
