@@ -3,69 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog Code Generator</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Blog Index Page Generator</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .config-panel, .preview-panel {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .color-picker {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .color-picker input[type="color"] {
+            width: 50px;
+            height: 40px;
+            padding: 2px;
+        }
+
+        button {
+            background-color: #2c5282;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #2a4365;
+        }
+
+        .code-output {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            margin-top: 20px;
+        }
+
+        .copy-button {
+            background-color: #4a5568;
+            margin-top: 10px;
+        }
+
+        .copy-button:hover {
+            background-color: #2d3748;
+        }
+
+        .success-message {
+            color: #48bb78;
+            text-align: center;
+            margin-top: 10px;
+            display: none;
+        }
+
+        #loading {
+            text-align: center;
+            color: #666;
+            display: none;
+        }
+    </style>
 </head>
 <body>
+    <h1>Blog Index Page Generator</h1>
+    
     <div class="container">
-        <h2>Generate Your Blog Code</h2>
+        <div class="config-panel">
+            <h2>Configuration</h2>
+            <div class="form-group">
+                <label for="blogUrl">Blog Domain URL</label>
+                <input type="text" id="blogUrl" placeholder="blog.example.com" value="blog.zneloy.site">
+            </div>
 
-        <label>Blog URL:</label>
-        <input type="text" id="blogUrl" placeholder="https://yourblog.com">
+            <div class="form-group">
+                <label for="maxPosts">Maximum Posts to Load</label>
+                <input type="number" id="maxPosts" min="10" max="500" value="500">
+            </div>
 
-        <label>Max Posts:</label>
-        <input type="number" id="maxPosts" value="10">
+            <div class="form-group">
+                <label for="postsPerPage">Posts per Page</label>
+                <input type="number" id="postsPerPage" min="5" max="50" value="10">
+            </div>
 
-        <label>Posts Per Page:</label>
-        <input type="number" id="postsPerPage" value="5">
+            <div class="form-group">
+                <label for="primaryColor">Primary Color</label>
+                <div class="color-picker">
+                    <input type="color" id="primaryColor" value="#2c5282">
+                    <span id="primaryColorText">#2c5282</span>
+                </div>
+            </div>
 
-        <label>Primary Color:</label>
-        <input type="color" id="primaryColor" value="#2c5282">
+            <div class="form-group">
+                <label for="layout">Layout Style</label>
+                <select id="layout">
+                    <option value="card">Card Layout</option>
+                    <option value="minimal">Minimal Layout</option>
+                </select>
+            </div>
 
-        <label>Heading Color:</label>
-        <input type="color" id="headingColor" value="#333333">
+            <button onclick="generateCode()">Generate Code</button>
+        </div>
 
-        <label>Background Color:</label>
-        <input type="color" id="bgColor" value="#f5f5f5">
-
-        <button onclick="generateCode()">Generate Code</button>
-
-        <h3>Generated Code:</h3>
-        <pre id="codeOutput"></pre>
-
-        <button onclick="copyCode()">Copy Code</button>
-        <div id="copySuccess">Code copied successfully!</div>
+        <div class="preview-panel">
+            <h2>Generated Code</h2>
+            <div id="loading">Loading template...</div>
+            <div class="code-output" id="codeOutput">Configure options and click Generate Code to see the result.</div>
+            <button class="copy-button" onclick="copyCode()">Copy Code</button>
+            <div class="success-message" id="copySuccess">Code copied to clipboard!</div>
+        </div>
     </div>
 
     <script>
-        async function generateCode() {
-            const blogUrl = document.getElementById('blogUrl').value;
+        let templateCode = '';
+
+        // Load template when page loads
+        fetch('template.html')
+            .then(response => response.text())
+            .then(template => {
+                templateCode = template;
+            })
+            .catch(error => {
+                console.error('Error loading template:', error);
+                document.getElementById('codeOutput').textContent = 'Error loading template. Please try again.';
+            });
+
+        function updateColorText(input, textElement) {
+            textElement.textContent = input.value.toUpperCase();
+        }
+
+        document.getElementById('primaryColor').addEventListener('input', function(e) {
+            updateColorText(e.target, document.getElementById('primaryColorText'));
+        });
+
+        function generateCode() {
+            const blogUrl = document.getElementById('blogUrl').value.trim();
             const maxPosts = document.getElementById('maxPosts').value;
             const postsPerPage = document.getElementById('postsPerPage').value;
             const primaryColor = document.getElementById('primaryColor').value;
-            const headingColor = document.getElementById('headingColor').value;
-            const bgColor = document.getElementById('bgColor').value;
+            const layout = document.getElementById('layout').value;
 
-            const response = await fetch('template.html');
-            let template = await response.text();
+            let generatedCode = templateCode
+                .replace('{{blogUrl}}', blogUrl)
+                .replace('{{maxPosts}}', maxPosts)
+                .replace('{{postsPerPage}}', postsPerPage)
+                .replace('{{primaryColor}}', primaryColor)
+                .replace('{{cardLayout}}', layout === 'card' ? '8px' : '0')
+                .replace('{{cardShadow}}', layout === 'card' ? '0 2px 4px rgba(0,0,0,0.1)' : 'none');
 
-            template = template
-                .replace(/{{BLOG_URL}}/g, blogUrl)
-                .replace(/{{MAX_POSTS}}/g, maxPosts)
-                .replace(/{{POSTS_PER_PAGE}}/g, postsPerPage)
-                .replace(/{{PRIMARY_COLOR}}/g, primaryColor)
-                .replace(/{{HEADING_COLOR}}/g, headingColor)
-                .replace(/{{BG_COLOR}}/g, bgColor);
-
-            document.getElementById('codeOutput').textContent = template;
+            document.getElementById('codeOutput').textContent = generatedCode;
         }
 
         function copyCode() {
             const codeOutput = document.getElementById('codeOutput');
+            const successMessage = document.getElementById('copySuccess');
+            
             navigator.clipboard.writeText(codeOutput.textContent).then(() => {
-                document.getElementById('copySuccess').style.display = 'block';
+                successMessage.style.display = 'block';
                 setTimeout(() => {
-                    document.getElementById('copySuccess').style.display = 'none';
+                    successMessage.style.display = 'none';
                 }, 2000);
             });
         }
