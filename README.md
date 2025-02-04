@@ -1,4 +1,4 @@
-# rss-feed-to-blog 📝🚀
+# RSS Feed to Index 📝🚀
 
 A simple web-based tool that generates an HTML blog index page using a Blogger RSS feed. Customize your blog layout, pagination, and styling effortlessly!
 
@@ -21,7 +21,7 @@ A simple web-based tool that generates an HTML blog index page using a Blogger R
 
 ## Live Demo 🌐
 
-[Check out the live version here](#)
+[Check out the live version here](https://mdsayeb7.github.io/rss-feed-to-index/)
 
 ## Contributing 🤝
 
